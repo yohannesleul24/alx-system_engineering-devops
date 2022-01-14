@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+# Script that writes PID to a file and responds to signals
+trap 'echo "Y U no love me?!"' SIGINT
+trap 'rm /var/run/holbertonscript.pid; exit' SIGQUIT
+trap 'echo "I hate the kill command"; rm /var/run/holbertonscript.pid; exit' SIGTERM
+echo $$ > /var/run/holbertonscript.pid
+while true; do
+echo "To infinity and beyond"
+sleep 2
+done
