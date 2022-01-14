@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+# Print current running processes with bash word without using ps
+pgrep "bash" -l
