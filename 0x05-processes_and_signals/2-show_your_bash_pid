@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+# Print current running processes with bash word
+# shellcheck disable=SC2059
+ps -auxf | grep "bash"
