@@ -1,10 +1,27 @@
 #!/usr/bin/env bash
-# Bash script that configures domain zone so that the subdomain www points to load-balancer 
-if [ $# -eq 1 ]; then
-	declare -a StringArray=('www' 'lb-01' 'web-01' 'web-02')
-	for val in "${StringArray[@]}"; do
-   		dig "$val.$1" | grep -A1 'ANSWER SECTION:' | paste - - | awk -v sd="$val" '{print "The subdomain " sd " is a " $7 " record and points to " $8}'
-	done
+# prints subdomains and their respective IP addresses
+
+func () {
+ if [ "$#" -ge 2 ]
+ then
+  subdomain="$2.$1"
+  record=$(dig "$subdomain" | grep -A1 'ANSWER SECTION:' | awk '{print$4}')
+  ip=$(dig "$subdomain" | grep -A1 'ANSWER SECTION:' | awk '{print$5}')
+  echo "The subdomain $2 is a"$record" record and points to"$ip""
+ else
+  declare -a subdomains=("www" "lb-01" "web-01" "web-02")
+  for x in "${subdomains[@]}"; do
+   subdomain="$x.$1"
+   record=$(dig "$subdomain" | grep -A1 'ANSWER SECTION:' | awk '{print$4}')
+   ip=$(dig "$subdomain" | grep -A1 'ANSWER SECTION:' | awk '{print$5}')
+   echo "The subdomain $x is a"$record" record and points to"$ip""
+ done
+ fi
+}
+
+if [ "$#" -ge 2 ]
+ then
+ func $1 $2
 else
-	dig "$2.$1" | grep -A1 'ANSWER SECTION:' | paste - - | awk -v sd="$2" '{print "The subdomain " sd " is a " $7 " record and points to " $8}'
+ func $1
 fi
