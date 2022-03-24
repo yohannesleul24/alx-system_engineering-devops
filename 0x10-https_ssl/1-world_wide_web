@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+# Bash script that configures domain zone so that the subdomain www points to load-balancer 
+if [ $# -eq 1 ]; then
+	declare -a StringArray=('www' 'lb-01' 'web-01' 'web-02')
+	for val in "${StringArray[@]}"; do
+   		dig "$val.$1" | grep -A1 'ANSWER SECTION:' | paste - - | awk -v sd="$val" '{print "The subdomain " sd " is a " $7 " record and points to " $8}'
+	done
+else
+	dig "$2.$1" | grep -A1 'ANSWER SECTION:' | paste - - | awk -v sd="$2" '{print "The subdomain " sd " is a " $7 " record and points to " $8}'
+fi
